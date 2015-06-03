@@ -1,0 +1,19 @@
+{
+  "name": "web-historian",
+  "version": "0.0.0",
+  "homepage": "https://github.com/bdstein33/2015-05-web-historian",
+  "authors": [
+    "Hack Reactor Students <accounts@hackreactor.com>"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
