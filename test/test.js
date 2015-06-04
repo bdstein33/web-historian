@@ -37,7 +37,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  xit("Should answer GET requests for archived websites", function(done) {
+  it("Should answer GET requests for archived websites", function(done) {
     var fixtureName = "www.google.com";
     var fixturePath = archive.paths.archivedSites + "/" + fixtureName;
 

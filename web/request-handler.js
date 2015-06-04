@@ -22,6 +22,8 @@ var sendResponse = function(response, statusCode, data) {
 
 // require more modules/folders here!
 exports.handleRequest = function (req, res) {
+  console.log(archive.readListOfUrls());
+
   // POST REQUEST
   if( req.method === "POST" ) {
      var dataStore = '';
@@ -41,13 +43,11 @@ exports.handleRequest = function (req, res) {
   // GET REQUEST
   else if( req.method === "GET" ) {
     var uri = url.parse(req.url).pathname;
-    var filename = path.join(process.cwd() + '/public', uri);
-    console.log(filename);
 
-    path.exists(filename, function(exists) {
-      console.log(exists);
+    var filename = path.join(archive.paths.public, uri);
+
+    fs.exists(filename, function(exists) {
       if( !exists ) {
-        console.log("A");
         res.writeHead(404, {"Content-Type": "text/plain"});
         res.write("404 Not Found\n");
         res.end();
@@ -55,7 +55,7 @@ exports.handleRequest = function (req, res) {
       }
 
       if( fs.statSync(filename).isDirectory() ) {
-        filename += 'index.html'
+        filename += 'index.html';
       }
 
       fs.readFile(filename, "binary", function(err, file) {
@@ -79,7 +79,7 @@ exports.handleRequest = function (req, res) {
       });
     });
   }
-}
+};
 
 var restConvert = function(string) {
   var array = string.split('&');
@@ -89,7 +89,7 @@ var restConvert = function(string) {
     results[objData[0]] = objData[1];
   }
   return results;
-}
+};
 
 
 // OLD
