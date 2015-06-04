@@ -15,8 +15,6 @@ var headers = {
 
 var sendResponse = function(response, statusCode, data) {
   statusCode = statusCode || 200;
-  console.log(statusCode);
-  console.log(headers);
   response.writeHead(statusCode, headers);
   data = data || '{}';
   response.end(data);
@@ -44,6 +42,33 @@ exports.handleRequest = function (req, res) {
       sendResponse(res, 201);
     }
   }
+
+  // Handles GET requests for static files
+  else if(/\/static\/\w{1,}/.test(req.url) ) {
+    var path = archive.paths.static + url.parse(req.url).path;
+    console.log(path);
+    if( req.method === "GET" ) {
+      if( /.js$/.test(path) ) {
+        fs.readFile(path, function(err, data) {
+          if (err) throw err;
+          console.log(path);
+          res.writeHead(200, {'Content-Type' : 'application/javascript'});
+          res.end(data);
+        });
+      }
+      else if( /.css$/.test(path) ) {
+        fs.readFile(path, function(err, data) {
+          if (err) throw err;
+          console.log("CSS");
+          res.writeHead(200, {'Content-Type' : 'text/css'});
+          res.end(data);
+        })
+      }
+
+      // sendResponse(res, 201);
+    }
+  }
+
   // Handles GET requests for archived websites
   else if( /\/\w{1,}/.test(req.url) ) {
     var path = url.parse(req.url).path;
@@ -54,17 +79,17 @@ exports.handleRequest = function (req, res) {
 
   // Handles GET requests to home page
   else if ( /\//.test(req.url) ) {
-    console.log(req.method);
-    if( req.method === 'GET'){
+    if( req.method === 'GET' ){
       fs.readFile(archive.paths.index, 'utf8', function(err, data) {
         if (err) throw err;
         // sendResponse(res, 200, data);
         res.writeHead(200, {'Content-Type' : 'text/html'});
         res.end(data, 'utf-8');
-    });
+      });
       // sendResponse(res, 200, '<input>');
     }
   }
+
 
 };
 
