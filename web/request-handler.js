@@ -22,25 +22,47 @@ var sendResponse = function(response, statusCode, data) {
 
 // require more modules/folders here!
 exports.handleRequest = function (req, res) {
+  console.log("REQUEST RECEIVED");
   // POST REQUEST
   if( req.method === "POST" ) {
     var dataStore = '';
-
     req.on('data', function(data) {
       dataStore += data;
+
     });
 
     req.on('end', function(data) {
+
       var dataObj = restConvert(dataStore);
-      fs.appendFile(archive.paths.list, dataObj['url']+"\n", function(err) {
-        if (err) throw err;
+
+      archive.addUrlToList(dataObj['url']);
+
+      archive.isUrlArchived(dataObj['url'], function(fileName){
+        // REDIRECT TO ARCHIVED PAGE AT THAT PATHNAM
+        fs.readFile(fileName, "binary", function(err, file) {
+          if( err ) {
+            res.writeHead(500, {"Content-Type": "text/plain"});
+            res.write(err + "\n");
+            res.end();
+            return;
+          }
+
+          else {
+            res.writeHead(200);
+          }
+
+          res.write(file, "binary");
+          res.end();
+        });
       });
-      sendResponse(res, 302, data);
+
+      // sendResponse(res, 302, data);
     });
   }
 
+
   // GET REQUEST
-  else if( req.method === "GET") {
+  if( req.method === "GET") {
     if (staticFileRequest(req)) {
 
       var uri = url.parse(req.url).pathname;
@@ -79,10 +101,24 @@ exports.handleRequest = function (req, res) {
         });
       });
     }
+
     else {
-      var fileName = url.parse(req.url).pathname;
-      console.log(fileName);
-      sendResponse(res, 200, fileName);
+
+
+
+
+      var callback = function(result) {
+        if (result.indexOf(fileName) === -1) {
+          sendResponse(res, 404);
+
+        }
+        else {
+          // Redirect to the right site
+        }
+      }
+
+      archive.readListOfUrls(callback);
+
     }
   }
 };

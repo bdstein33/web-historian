@@ -1,6 +1,4 @@
 test.com
-youtube.com
-youtube.com
-xkcd.com
-xkcd.com
-xkcd.com
+test
+www.google.com
+www.test.com

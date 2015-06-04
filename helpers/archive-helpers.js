@@ -11,7 +11,7 @@ var _ = require('underscore');
 
 exports.paths = {
   'siteAssets' : path.join(__dirname, '../web/public'),
-  'archivedSites' : path.join(__dirname, '../archives/sites'),
+  'archivedSites' : path.join(__dirname, '../web/archives/sites'),
   'list' : path.join(__dirname, '../web/archives/sites.txt'),
   'index' : path.join(__dirname, '../web/public/index.html'),
   'public' : path.join(__dirname, '../web/public'),
@@ -28,31 +28,39 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(){
-  // var results;
-
-  // var populateResults = function() {
-  //   fs.readFile(exports.paths.list, "utf8", function(err, data){
-  //     if( err ) {
-  //       throw err;
-  //     }
-  //     else {
-
-  //     }
-  //   });
-
-  // };
-
-  // return JSON.parse(fs.readFileSync(exports.paths.list, 'utf8'));
+exports.readListOfUrls = function(cb){
+  fs.readFile(exports.paths.list, "utf8", function(err, data) {
+    if (err) throw err;
+    data = data.split('\n');
+    cb(data);
+  });
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(fileName, cb){
+  exports.readListOfUrls(function(result) {
+    if (result.indexOf(fileName) !== -1) {
+      cb(fileName)
+    }
+  });
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(url){
+  exports.readListOfUrls(function(result) {
+    if (result.indexOf(url) === -1) {
+      fs.appendFile(exports.paths.list, url + '\n');
+    }
+  });
+
 };
 
-exports.isURLArchived = function(){
+exports.isUrlArchived = function(url, cb){
+  var fileName = exports.paths.archivedSites + "/" + url;
+  fs.exists(fileName, function(exists) {
+    console.log(fileName);
+    if (exists) {
+      cb(fileName);
+    }
+  })
 };
 
 exports.downloadUrls = function(){

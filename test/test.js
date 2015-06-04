@@ -64,7 +64,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  it("Should append submitted sites to 'sites.txt'", function(done) {
+  xit("Should append submitted sites to 'sites.txt'", function(done) {
     var url = "www.example.com";
     var req = new stubs.Request("/websites", "POST", {url: url});
     // Reset the test file and process request
@@ -80,7 +80,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  xit("Should 404 when asked for a nonexistent file", function(done) {
+  it("Should 404 when asked for a nonexistent file", function(done) {
     var req = new stubs.Request("/arglebargle", "GET");
 
     handler.handleRequest(req, res);
