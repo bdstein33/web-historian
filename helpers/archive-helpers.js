@@ -14,7 +14,7 @@ exports.paths = {
   'archivedSites' : path.join(__dirname, '../archives/sites'),
   'list' : path.join(__dirname, '../archives/sites.txt'),
   'index' : path.join(__dirname, '../web/public/index.html'),
-  'static' : path.join(__dirname, '../web/public'),
+  'public' : path.join(__dirname, '../web/public'),
 
 };
 
