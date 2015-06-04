@@ -23,7 +23,7 @@ beforeEach(function(){
 
 describe("Node Server Request Listener Function", function() {
 
-  xit("Should answer GET requests for /", function(done) {
+  it("Should answer GET requests for /", function(done) {
     var req = new stubs.Request("/", "GET");
 
     handler.handleRequest(req, res);
@@ -56,8 +56,6 @@ describe("Node Server Request Listener Function", function() {
       function() { return res._ended; },
       function(){
         expect(res._responseCode).to.equal(200);
-        console.log(res._responseCode);
-        console.log(res._data);
         expect(res._data.toString().match(/google/)).to.be.ok; // the resulting html should have the text "google"
 
         // Delete the file from the archives.
@@ -66,23 +64,19 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  it("Should append submitted sites to 'sites.txt'", function(done) {
+  xit("Should append submitted sites to 'sites.txt'", function(done) {
     var url = "www.example.com";
     var req = new stubs.Request("/websites", "POST", {url: url});
     // Reset the test file and process request
-    console.log("A");
 
     fs.writeFileSync(archive.paths.list, "");
-    console.log("B");
 
     handler.handleRequest(req, res);
     waitForThen(
       function() { return res._ended; },
       function(){
         var fileContents = fs.readFileSync(archive.paths.list, 'utf8');
-        console.log(res._responseCode);
         expect(res._responseCode).to.equal(302);
-        console.log("C");
         expect(fileContents).to.equal(url + "\n");
         done();
     });
