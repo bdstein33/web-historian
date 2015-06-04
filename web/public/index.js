@@ -24,6 +24,7 @@ $(document).ready(function(){
   $('#input-form').on('submit', function(e) {
     e.preventDefault();
     var website = {url: $('#url').val()};
+    console.log(website);
     sendRequest(website);
   });
 
