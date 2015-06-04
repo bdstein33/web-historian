@@ -25,7 +25,7 @@ var sendResponse = function(response, statusCode, data) {
 // require more modules/folders here!
 
 exports.handleRequest = function (req, res) {
-
+  // Handles POST requests to /websites
   if( /\/websites/.test(req.url) ){
     if( req.method === 'OPTIONS'){
       sendResponse(res);
@@ -44,13 +44,15 @@ exports.handleRequest = function (req, res) {
       sendResponse(res, 201);
     }
   }
+  // Handles GET requests for archived websites
+  else if( /\/\w{1,}/.test(req.url) ) {
+    var path = url.parse(req.url).path;
+    if( req.method === "GET" ) {
+      sendResponse(res, 200, path);
+    }
+  }
 
-  // else if( /\/\w{1,}/.test(req.url) ) {
-  //   var path = url.parse(req.url).path;
-  //   if( req.method === "GET" ) {
-  //     sendResponse(res)
-  //   }
-  // }
+  // Handles GET requests to home page
   else if ( /\//.test(req.url) ) {
     console.log(req.method);
     if( req.method === 'GET'){
@@ -64,7 +66,6 @@ exports.handleRequest = function (req, res) {
     }
   }
 
-  // res.end(archive.paths.list);
 };
 
 
