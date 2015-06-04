@@ -68,9 +68,7 @@ describe("Node Server Request Listener Function", function() {
     var url = "www.example.com";
     var req = new stubs.Request("/websites", "POST", {url: url});
     // Reset the test file and process request
-
     fs.writeFileSync(archive.paths.list, "");
-
     handler.handleRequest(req, res);
     waitForThen(
       function() { return res._ended; },

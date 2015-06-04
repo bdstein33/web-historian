@@ -24,7 +24,7 @@ var sendResponse = function(response, statusCode, data) {
 exports.handleRequest = function (req, res) {
   // POST REQUEST
   if( req.method === "POST" ) {
-     var dataStore = '';
+    var dataStore = '';
 
     req.on('data', function(data) {
       dataStore += data;
@@ -35,6 +35,7 @@ exports.handleRequest = function (req, res) {
       fs.appendFile(archive.paths.list, dataObj['url']+"\n", function(err) {
         if (err) throw err;
       });
+      sendResponse(res, 302, data);
     });
   }
 
