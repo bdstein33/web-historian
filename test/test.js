@@ -23,7 +23,7 @@ beforeEach(function(){
 
 describe("Node Server Request Listener Function", function() {
 
-  it("Should answer GET requests for /", function(done) {
+  xit("Should answer GET requests for /", function(done) {
     var req = new stubs.Request("/", "GET");
 
     handler.handleRequest(req, res);
@@ -37,7 +37,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  it("Should answer GET requests for archived websites", function(done) {
+  xit("Should answer GET requests for archived websites", function(done) {
     var fixtureName = "www.google.com";
     var fixturePath = archive.paths.archivedSites + "/" + fixtureName;
 
@@ -64,7 +64,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  xit("Should append submitted sites to 'sites.txt'", function(done) {
+  it("Should append submitted sites to 'sites.txt'", function(done) {
     var url = "www.example.com";
     var req = new stubs.Request("/websites", "POST", {url: url});
     // Reset the test file and process request
@@ -120,7 +120,7 @@ describe("html fetcher helpers", function(){
     });
   });
 
-  it("should have a 'downloadUrls' function", function(){
+  xit("should have a 'downloadUrls' function", function(){
     expect(typeof archive.downloadUrls).to.equal('function');
   });
 

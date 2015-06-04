@@ -22,8 +22,6 @@ var sendResponse = function(response, statusCode, data) {
 
 // require more modules/folders here!
 exports.handleRequest = function (req, res) {
-  console.log(archive.readListOfUrls());
-
   // POST REQUEST
   if( req.method === "POST" ) {
      var dataStore = '';
@@ -41,43 +39,50 @@ exports.handleRequest = function (req, res) {
   }
 
   // GET REQUEST
-  else if( req.method === "GET" ) {
-    var uri = url.parse(req.url).pathname;
+  else if( req.method === "GET") {
+    if (staticFileRequest(req)) {
 
-    var filename = path.join(archive.paths.public, uri);
+      var uri = url.parse(req.url).pathname;
+      var fileName = path.join(archive.paths.public, uri);
 
-    fs.exists(filename, function(exists) {
-      if( !exists ) {
-        res.writeHead(404, {"Content-Type": "text/plain"});
-        res.write("404 Not Found\n");
-        res.end();
-        return;
-      }
-
-      if( fs.statSync(filename).isDirectory() ) {
-        filename += 'index.html';
-      }
-
-      fs.readFile(filename, "binary", function(err, file) {
-        if( err ) {
-          res.writeHead(500, {"Content-Type": "text/plain"});
-          res.write(err + "\n");
+      fs.exists(fileName, function(exists) {
+        if( !exists ) {
+          res.writeHead(404, {"Content-Type": "text/plain"});
+          res.write("404 Not Found\n");
           res.end();
           return;
         }
 
-        if( /.css$/.test(filename) ) {
-          res.writeHead(200, {'Content-Type' : 'text/css'});
+        if( fs.statSync(fileName).isDirectory() ) {
+          fileName += 'index.html';
         }
 
-        else {
-          res.writeHead(200);
-        }
+        fs.readFile(fileName, "binary", function(err, file) {
+          if( err ) {
+            res.writeHead(500, {"Content-Type": "text/plain"});
+            res.write(err + "\n");
+            res.end();
+            return;
+          }
 
-        res.write(file, "binary");
-        res.end();
+          if( /.css$/.test(fileName) ) {
+            res.writeHead(200, {'Content-Type' : 'text/css'});
+          }
+
+          else {
+            res.writeHead(200);
+          }
+
+          res.write(file, "binary");
+          res.end();
+        });
       });
-    });
+    }
+    else {
+      var fileName = url.parse(req.url).pathname;
+      console.log(fileName);
+      sendResponse(res, 200, fileName);
+    }
   }
 };
 
@@ -90,6 +95,14 @@ var restConvert = function(string) {
   }
   return results;
 };
+
+var staticFileRequest = function(req) {
+  var fileName = url.parse(req.url).pathname;
+  if (/.css$/.test(fileName) || /.js$/.test(fileName) || /^\/$/.test(fileName)) {
+    return true;
+  }
+  return false;
+}
 
 
 // OLD

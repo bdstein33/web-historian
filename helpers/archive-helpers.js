@@ -12,7 +12,7 @@ var _ = require('underscore');
 exports.paths = {
   'siteAssets' : path.join(__dirname, '../web/public'),
   'archivedSites' : path.join(__dirname, '../archives/sites'),
-  'list' : path.join(__dirname, '../archives/sites.txt'),
+  'list' : path.join(__dirname, '../web/archives/sites.txt'),
   'index' : path.join(__dirname, '../web/public/index.html'),
   'public' : path.join(__dirname, '../web/public'),
 
@@ -29,21 +29,21 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
-  var results;
+  // var results;
 
-  var populateResults = function() {
-    fs.readFile(exports.paths.list, "utf8", function(err, data){
-      if( err ) {
-        throw err;
-      }
-      else {
-        
-      }
-    });
-   
-  };  
+  // var populateResults = function() {
+  //   fs.readFile(exports.paths.list, "utf8", function(err, data){
+  //     if( err ) {
+  //       throw err;
+  //     }
+  //     else {
 
-  return JSON.parse(fs.readFileSync(exports.paths.list, 'utf8'));
+  //     }
+  //   });
+
+  // };
+
+  // return JSON.parse(fs.readFileSync(exports.paths.list, 'utf8'));
 };
 
 exports.isUrlInList = function(){
