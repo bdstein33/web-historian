@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var request = require('request');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -14,6 +15,7 @@ exports.paths = {
   'archivedSites' : path.join(__dirname, '../web/archives/sites'),
   'list' : path.join(__dirname, '../web/archives/sites.txt'),
   'index' : path.join(__dirname, '../web/public/index.html'),
+  'loading' : path.join(__dirname, '../web/public/loading.html'),
   'public' : path.join(__dirname, '../web/public'),
 
 };
@@ -53,15 +55,52 @@ exports.addUrlToList = function(url){
 
 };
 
-exports.isUrlArchived = function(url, cb){
+exports.isUrlArchived = function(url, cb1, cb2){
   var fileName = exports.paths.archivedSites + "/" + url;
   fs.exists(fileName, function(exists) {
-    console.log(fileName);
+    console.log(exists);
     if (exists) {
-      cb(fileName);
+      cb1(fileName);
+    } else {
+      cb2(fileName);
     }
   })
 };
 
+// exports.downloadUrls = function(){
+//   exports.readListOfUrls(function(data){
+//     for (var i = 0; i < data.length; i++) {
+//       exports.isUrlArchived(data[i],
+//         function(fileName){
+//         return;
+//       }), function (filePath) {
+//         http.get(data[i], function(err, res) {
+//           if (err) throw err;
+//         })
+//         //get html
+//         //create file
+//         //reference data[i] for website url
+//         //fileName will be the name of the new file created
+//       }
+//     }
+//   })
+// };
+
+
 exports.downloadUrls = function(){
+  var uri;
+  exports.readListOfUrls(function(data){
+    for (var i = 0; i < data.length-1; i++) {
+      uri = data[i];
+      //console.log(uri);
+      exports.isUrlArchived(data[i],
+        function(fileName){
+        },
+        function(filePath){
+          console.log(uri);
+          request('http://' + uri).pipe(fs.createWriteStream(exports.paths.archivedSites + '/' + uri));
+        });
+    }
+    return true;
+  });
 };

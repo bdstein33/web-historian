@@ -37,7 +37,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  xit("Should answer GET requests for archived websites", function(done) {
+  it("Should answer GET requests for archived websites", function(done) {
     var fixtureName = "www.google.com";
     var fixturePath = archive.paths.archivedSites + "/" + fixtureName;
 
@@ -55,6 +55,7 @@ describe("Node Server Request Listener Function", function() {
     waitForThen(
       function() { return res._ended; },
       function(){
+        console.log(res._responseCode);
         expect(res._responseCode).to.equal(200);
         expect(res._data.toString().match(/google/)).to.be.ok; // the resulting html should have the text "google"
 
@@ -80,7 +81,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  it("Should 404 when asked for a nonexistent file", function(done) {
+  xit("Should 404 when asked for a nonexistent file", function(done) {
     var req = new stubs.Request("/arglebargle", "GET");
 
     handler.handleRequest(req, res);
