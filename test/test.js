@@ -23,7 +23,7 @@ beforeEach(function(){
 
 describe("Node Server Request Listener Function", function() {
 
-  xit("Should answer GET requests for /", function(done) {
+  it("Should answer GET requests for /", function(done) {
     var req = new stubs.Request("/", "GET");
 
     handler.handleRequest(req, res);
@@ -55,7 +55,6 @@ describe("Node Server Request Listener Function", function() {
     waitForThen(
       function() { return res._ended; },
       function(){
-        console.log(res._responseCode);
         expect(res._responseCode).to.equal(200);
         expect(res._data.toString().match(/google/)).to.be.ok; // the resulting html should have the text "google"
 
@@ -65,12 +64,14 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  xit("Should append submitted sites to 'sites.txt'", function(done) {
+  it("Should append submitted sites to 'sites.txt'", function(done) {
     var url = "www.example.com";
-    var req = new stubs.Request("/websites", "POST", {url: url});
+    var req = new stubs.Request("/", "POST", {url: url});
+
     // Reset the test file and process request
     fs.writeFileSync(archive.paths.list, "");
     handler.handleRequest(req, res);
+
     waitForThen(
       function() { return res._ended; },
       function(){
@@ -81,7 +82,7 @@ describe("Node Server Request Listener Function", function() {
     });
   });
 
-  xit("Should 404 when asked for a nonexistent file", function(done) {
+  it("Should 404 when asked for a nonexistent file", function(done) {
     var req = new stubs.Request("/arglebargle", "GET");
 
     handler.handleRequest(req, res);
@@ -98,11 +99,11 @@ describe("Node Server Request Listener Function", function() {
 
 describe("html fetcher helpers", function(){
 
-  xit("should have a 'readListOfUrls' function", function(){
+  it("should have a 'readListOfUrls' function", function(){
     expect(typeof archive.readListOfUrls).to.equal('function');
   });
 
-  xit("should read urls from sites.txt", function(done){
+  it("should read urls from sites.txt", function(done){
     var urlArray = ["example1.com", "example2.com"];
     var resultArray;
 
@@ -119,7 +120,7 @@ describe("html fetcher helpers", function(){
     });
   });
 
-  xit("should have a 'downloadUrls' function", function(){
+  it("should have a 'downloadUrls' function", function(){
     expect(typeof archive.downloadUrls).to.equal('function');
   });
 

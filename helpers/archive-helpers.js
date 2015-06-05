@@ -12,12 +12,8 @@ var request = require('request');
 
 exports.paths = {
   'siteAssets' : path.join(__dirname, '../web/public'),
-  'archivedSites' : path.join(__dirname, '../web/archives/sites'),
-  'list' : path.join(__dirname, '../web/archives/sites.txt'),
-  'index' : path.join(__dirname, '../web/public/index.html'),
-  'loading' : path.join(__dirname, '../web/public/loading.html'),
-  'public' : path.join(__dirname, '../web/public'),
-
+  'archivedSites' : path.join(__dirname, '../archives/sites'),
+  'list' : path.join(__dirname, '../archives/sites.txt')
 };
 
 // Used for stubbing paths for jasmine tests, do not modify
@@ -31,76 +27,37 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(cb){
-  fs.readFile(exports.paths.list, "utf8", function(err, data) {
+  fs.readFile(exports.paths.list, function(err, data){
     if (err) throw err;
-    data = data.split('\n');
-    cb(data);
+    sites = data.toString().split('\n');
+    cb(sites);
   });
 };
 
-exports.isUrlInList = function(fileName, cb){
-  exports.readListOfUrls(function(result) {
-    if (result.indexOf(fileName) !== -1) {
-      cb(fileName)
-    }
+exports.isUrlInList = function(url, cb){
+  exports.readListOfUrls(function(sites){
+    var found = sites.indexOf(url) > -1;
+    cb(found);
   });
 };
 
 exports.addUrlToList = function(url){
-  exports.readListOfUrls(function(result) {
-    if (result.indexOf(url) === -1) {
-      fs.appendFile(exports.paths.list, url + '\n');
-    }
+  fs.appendFile(exports.paths.list, url + '\n', function(err, file) {
+    if (err) throw err;
   });
-
 };
 
-exports.isUrlArchived = function(url, cb1, cb2){
-  var fileName = exports.paths.archivedSites + "/" + url;
-  fs.exists(fileName, function(exists) {
-    console.log(exists);
-    if (exists) {
-      cb1(fileName);
-    } else {
-      cb2(fileName);
-    }
-  })
+exports.isUrlArchived = function(url, cb){
+  var sitePath = path.join(exports.paths.archivedSites, url);
+  fs.exists(sitePath, function(exists) {
+    cb(exists);
+  });
 };
 
-// exports.downloadUrls = function(){
-//   exports.readListOfUrls(function(data){
-//     for (var i = 0; i < data.length; i++) {
-//       exports.isUrlArchived(data[i],
-//         function(fileName){
-//         return;
-//       }), function (filePath) {
-//         http.get(data[i], function(err, res) {
-//           if (err) throw err;
-//         })
-//         //get html
-//         //create file
-//         //reference data[i] for website url
-//         //fileName will be the name of the new file created
-//       }
-//     }
-//   })
-// };
-
-
-exports.downloadUrls = function(){
-  var uri;
-  exports.readListOfUrls(function(data){
-    for (var i = 0; i < data.length-1; i++) {
-      uri = data[i];
-      //console.log(uri);
-      exports.isUrlArchived(data[i],
-        function(fileName){
-        },
-        function(filePath){
-          console.log(uri);
-          request('http://' + uri).pipe(fs.createWriteStream(exports.paths.archivedSites + '/' + uri));
-        });
-    }
-    return true;
+exports.downloadUrls = function(urls){
+  _.each(urls, function(url) {
+    if(!url){ return; }
+    request('http://' + url).pipe(fs.createWriteStream(exports.paths.archivedSites + "/" + url));
   });
+  return true;
 };
